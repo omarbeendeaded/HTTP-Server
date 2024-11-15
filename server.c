@@ -145,6 +145,9 @@ int main(int argc, char *argv[])
 							perror("fork");
 							exit(1);
 						}
+
+						// Delete query after script is done
+						unsetenv("QUERY_STRING");
 					}
 				}
 				// If path does not exist send 404 error
@@ -247,8 +250,9 @@ void do_cat(char* path, int cfd)
 	}
 	
 	int numRead;
-	while((numRead = read(fd, buf, sizeof(buf))) > 0)
+	while((numRead = read(fd, buf, sizeof(buf) - 1)) > 0)
 	{
+		buf[numRead] = '\0';
 		sendChunk(buf, cfd, 0);
 	}
 
