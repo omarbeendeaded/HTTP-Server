@@ -16,6 +16,7 @@
 #define STDOUT   1
 #define BUF_SIZE 100
 #define BACKLOG  2
+#define PORT     80
 
 extern char** environ;
 
@@ -33,10 +34,6 @@ int main(int argc, char *argv[])
 	char buf[BUF_SIZE];
 	int opt = 1;
 
-	if (argc < 2 || strcmp(argv[1], "--help") == 0) {
-		printf("Usage: %s port\n", argv[0]);
-		exit(1);
-	}
 	// Creating socket file descriptor
 	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
 		printf("SERVER: socket create failed (%s)\n", strerror(errno));
@@ -56,7 +53,7 @@ int main(int argc, char *argv[])
 	   and make this a listening socket */
 	addr.sin_family = AF_INET;
 	addr.sin_addr.s_addr = INADDR_ANY;
-	addr.sin_port = htons(atoi(argv[1]));
+	addr.sin_port = htons(PORT);
 
 	if (bind(server_fd, (struct sockaddr *)&addr, sizeof(addr)) == -1) {
 		printf("SERVER: bind failed (%s)\n", strerror(errno));
